@@ -18,8 +18,6 @@ const NUMBERSMAP = {
 } as const;
 
 const NUMBERSASWORDS = Object.keys(NUMBERSMAP);
-const biggestWordLength = Math.max(...NUMBERSASWORDS.map((x) => x.length));
-
 const FIRSTCHAROFNUMBERS = NUMBERSASWORDS.map((x) => x[0]);
 
 let sum = 0;
