@@ -7,15 +7,13 @@ const numberRegex = /\d+/g;
 const getCardId = (card: string) =>
   parseInt(card.split(":")[0].match(numberRegex)![0]);
 
-let currentCardId = 1;
+const totalInstancesOfCardId = new Map<number, number>();
+for (let i = 0; i < cards.length; i++) totalInstancesOfCardId.set(i + 1, 1);
+
+const lastCardId = getCardId(cards[cards.length - 1]);
 for (let i = 0; i < cards.length; i++) {
   const card = cards[i];
-
   const cardId = getCardId(card);
-  if (cardId !== currentCardId) {
-    currentCardId = cardId;
-    console.log(cardId);
-  }
 
   const numbers = card.split(":")[1];
   const winningNumbers = numbers
@@ -35,24 +33,21 @@ for (let i = 0; i < cards.length; i++) {
   for (const number of myNumbers)
     if (winningNumbers.includes(number)) matches++;
 
+  const numOfCardsToAdd = totalInstancesOfCardId.get(cardId) ?? 0;
   for (let j = 0; j < matches; j++) {
-    const toAddCardId = cardId + 1 + j;
-    const cardToAdd = cards.find(
-      (card) => getCardId(card) === toAddCardId
-    ) as string;
-    if (!cardToAdd) continue;
+    const toCountCardId = cardId + 1 + j;
+    if (toCountCardId > lastCardId) break;
 
-    const indexOfPlacement = findLastIndex(toAddCardId) + 1;
-    cards.splice(indexOfPlacement, 0, cardToAdd);
+    totalInstancesOfCardId.set(
+      toCountCardId,
+      totalInstancesOfCardId.get(toCountCardId)! + numOfCardsToAdd
+    );
   }
 }
 
-function findLastIndex(cardId: number) {
-  for (let i = cards.length - 1; i >= 0; i--) {
-    const card = cards[i];
-    if (getCardId(card) === cardId) return i;
-  }
-  return -1;
-}
-
-console.log(cards.length);
+//get number of cards by using the total instances of each card id
+let totalCards = Array.from(totalInstancesOfCardId.values()).reduce(
+  (a, b) => a + b,
+  0
+);
+console.log(totalCards);
