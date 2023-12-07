@@ -14,11 +14,22 @@ maps = maps.map((m) =>
   m.sort((a, b) => a.sourceRangeStart - b.sourceRangeStart)
 );
 
-for (let seed of seeds) {
-  let value = seed;
+const names = [
+  "seed-to-soil",
+  "soil-to-fertilizer",
+  "fertilizer-to-water",
+  "water-to-light",
+  "light-to-temperature",
+  "temperature-to-humidity",
+  "humidity-to-location",
+];
 
-  for (let i = 0; i < maps.length; i++) {
-    const map = maps[i];
+for (let i = 0; i < seeds.length; i++) {
+  let value = seeds[i];
+
+  for (let j = 0; j < maps.length; j++) {
+    const map = maps[j];
+    console.log(names[j]);
     const firstInstruction = map[0];
     const lastInstruction = map[map.length - 1];
 
@@ -37,14 +48,16 @@ for (let seed of seeds) {
 
       if (value >= sourceStart && value <= sourceEnd) {
         const relativeValue = value - sourceStart;
-        value = destinationStart + relativeValue;
+        const newValue = destinationStart + relativeValue;
+        value = newValue;
+        break;
       }
     }
   }
-  seed = value;
+  seeds[i] = value;
 }
 
-const lowest = Math.max(...seeds);
+const lowest = Math.min(...seeds);
 console.log(lowest);
 
 function getSequentialMaps(lines: string[]) {
