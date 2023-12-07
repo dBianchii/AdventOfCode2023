@@ -14,22 +14,11 @@ maps = maps.map((m) =>
   m.sort((a, b) => a.sourceRangeStart - b.sourceRangeStart)
 );
 
-const names = [
-  "seed-to-soil",
-  "soil-to-fertilizer",
-  "fertilizer-to-water",
-  "water-to-light",
-  "light-to-temperature",
-  "temperature-to-humidity",
-  "humidity-to-location",
-];
-
 for (let i = 0; i < seeds.length; i++) {
   let value = seeds[i];
 
   for (let j = 0; j < maps.length; j++) {
     const map = maps[j];
-    console.log(names[j]);
     const firstInstruction = map[0];
     const lastInstruction = map[map.length - 1];
 
@@ -44,8 +33,8 @@ for (let i = 0; i < seeds.length; i++) {
       const sourceEnd = sourceStart + instruction.rangeLength;
 
       const destinationStart = instruction.destinationRangeStart;
-      const destinationEnd = destinationStart + instruction.rangeLength;
 
+      if (value === sourceEnd) continue; //The next instruction takes priority apparently
       if (value >= sourceStart && value <= sourceEnd) {
         const relativeValue = value - sourceStart;
         const newValue = destinationStart + relativeValue;
